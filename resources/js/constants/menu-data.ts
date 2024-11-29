@@ -8,7 +8,7 @@ export const groups: MenuGroupType[] = [
         items: [
             {
                 title: "Dashboard",
-                url: route("dashboard"),
+                url: "/dashboard",
                 icon: IconHome,
                 child: "dashboard",
             },
@@ -16,7 +16,7 @@ export const groups: MenuGroupType[] = [
     },
     {
         label: "Settings",
-        permission: ["read permission", "read role", "read user"],
+        permission: ["read permission", "read role"],
         items: [
             {
                 title: "Access Control List",
@@ -25,13 +25,13 @@ export const groups: MenuGroupType[] = [
                 items: [
                     {
                         title: "Permissions",
-                        url: route("permissions.index"),
+                        url: "/permissions",
                         child: "permissions",
                         permission: ["read permission"],
                     },
                     {
                         title: "Roles",
-                        url: route("roles.index"),
+                        url: "/roles",
                         child: "roles",
                         permission: ["read role"],
                     },
@@ -40,11 +40,11 @@ export const groups: MenuGroupType[] = [
             {
                 title: "Management",
                 icon: IconMacbookAir,
-                permission: ["read user"],
+                permission: [ "read user"],
                 items: [
                     {
                         title: "Users",
-                        url: route("users.index"),
+                        url: "/users",
                         child: "users",
                         permission: ["read user"],
                     },
