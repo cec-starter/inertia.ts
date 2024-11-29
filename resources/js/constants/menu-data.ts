@@ -16,7 +16,7 @@ export const groups: MenuGroupType[] = [
     },
     {
         label: "Settings",
-        permission: ["read permission", "read role"],
+        permission: ["read permission", "read role", "read user"],
         items: [
             {
                 title: "Access Control List",
@@ -40,7 +40,7 @@ export const groups: MenuGroupType[] = [
             {
                 title: "Management",
                 icon: IconMacbookAir,
-                permission: [ "read user"],
+                permission: ["read user"],
                 items: [
                     {
                         title: "Users",
