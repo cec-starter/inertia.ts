@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Back;
 
-use App\Http\Controllers\Controller;
-use App\Models\Permission;
-use App\Models\Role;
 use Carbon\Carbon;
+use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controllers\Middleware;
+use App\Http\Requests\Back\Role\RoleStoreRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use App\Http\Requests\Back\Role\RoleUpdateRequest;
 
 class RolesController extends Controller implements HasMiddleware
 {
@@ -36,9 +38,6 @@ class RolesController extends Controller implements HasMiddleware
             'listPermissions' => $this->getListPermissions(),
         ];
 
-        // echo json_encode($data['listPermissions']);
-        // exit;
-
         return inertia('back/roles/index', $data);
 
     }
@@ -60,6 +59,69 @@ class RolesController extends Controller implements HasMiddleware
             ], 500);
         }
 
+    }
+
+
+    public function store(RoleStoreRequest $request)
+    {
+        try {
+            $request->validated();
+
+            $this->createRole($request);
+
+            flashMessage('Success', 'Role created successfully');
+
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            flashMessage('Error', 'Oops, something went wrong');
+            return back();
+        }
+
+        return back();
+    }
+
+    public function update(RoleUpdateRequest $request, Role $role)
+    {
+        try {
+            $request->validated();
+
+            $this->updateRole($role, $request);
+
+            flashMessage('Success', 'Role updated successfully');
+
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            flashMessage('Error', 'Oops, something went wrong');
+            return back();
+        }
+
+        return back();
+    }
+
+    public function destroy(Role $role)
+    {
+        try {
+            $role->delete();
+            flashMessage('Success', 'Role deleted successfully');
+            return back();
+        } catch (\Exception $e) {
+            flashMessage('Error', 'Oops, something went wrong');
+            return back();
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        try {
+            Role::whereIn('id', $request->ids)->delete();
+            flashMessage('Success', 'Roles deleted successfully');
+            return back();
+        } catch (\Exception $e) {
+            flashMessage('Error', 'Oops, something went wrong');
+            return back();
+        }
     }
 
     private function getListPermissions()
@@ -139,102 +201,45 @@ class RolesController extends Controller implements HasMiddleware
         return $roles;
     }
 
-    public function store(Request $request)
+    private function createRole($request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name',
-            'permissions' => 'array',
-        ]);
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $role = Role::create(['name' => $request->name]);
-
-            // Process permissions
-            $permissions = [];
-            foreach ($request->permissions as $module => $modulePermissions) {
-                foreach ($modulePermissions as $permission) {
-                    $permissions[] = $permission . ' ' . strtolower(str_replace(' Module', '', $module));
-                }
-            }
-
-            if (!empty($permissions)) {
-                $role->syncPermissions($permissions);
-            }
-
+            $this->syncRolePermissions($role, $request->permissions);
             DB::commit();
-            flashMessage('Success', 'Role created successfully');
-
-            return back();
-
-        } catch (ValidationException $e) {
-            DB::rollBack();
-            return back()->withErrors($e->errors())->withInput();
+            return $role;
         } catch (\Exception $e) {
             DB::rollBack();
-            flashMessage('Error', 'Oops, something went wrong');
-            return back();
+            throw $e;
         }
     }
 
-    public function update(Request $request, Role $role)
+    private function updateRole($role, $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'permissions' => 'array',
-        ]);
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $role->update(['name' => $request->name]);
-
-            // Process permissions
-            $permissions = [];
-            foreach ($request->permissions as $module => $modulePermissions) {
-                foreach ($modulePermissions as $permission) {
-                    $permissions[] = $permission . ' ' . strtolower(str_replace(' Module', '', $module));
-                }
-            }
-
-            $role->syncPermissions($permissions);
-
+            $this->syncRolePermissions($role, $request->permissions);
             DB::commit();
-            flashMessage('Success', 'Role updated successfully');
-
-            return back();
-        } catch (ValidationException $e) {
-            DB::rollBack();
-            return back()->withErrors($e->errors())->withInput();
+            return $role;
         } catch (\Exception $e) {
             DB::rollBack();
-            flashMessage('Error', 'Oops, something went wrong');
-            return back();
+            throw $e;
         }
     }
 
-    public function destroy(Role $role)
+    private function syncRolePermissions($role, $permissions)
     {
-        try {
-            $role->delete();
-            flashMessage('Success', 'Role deleted successfully');
-            return back();
-        } catch (\Exception $e) {
-            flashMessage('Error', 'Oops, something went wrong');
-            return back();
+        $formattedPermissions = [];
+        foreach ($permissions as $module => $modulePermissions) {
+            foreach ($modulePermissions as $permission) {
+                $formattedPermissions[] = $permission . ' ' . strtolower(str_replace(' Module', '', $module));
+            }
         }
-    }
 
-    public function bulkDestroy(Request $request)
-    {
-        try {
-            Role::whereIn('id', $request->ids)->delete();
-            flashMessage('Success', 'Roles deleted successfully');
-            return back();
-        } catch (\Exception $e) {
-            flashMessage('Error', 'Oops, something went wrong');
-            return back();
+        if (!empty($formattedPermissions)) {
+            $role->syncPermissions($formattedPermissions);
         }
     }
 

@@ -64,31 +64,9 @@ class PermissionController extends Controller implements HasMiddleware
         try {
             $request->validated();
 
-            $moduleName = $request->module_name;
-            if (stripos($moduleName, 'module') === false) {
-                $moduleName = "{$moduleName} Module";
-            }
-
-            // Get base module name for validation
-            $baseModuleName = str_replace(' module', '', strtolower($moduleName));
-            $permissionName = strtolower($request->name);
-
-            // Validate that permission name contains the module name
-            if (stripos($permissionName, $baseModuleName) === false) {
-                throw ValidationException::withMessages([
-                    'name' => ["Permission name must contain the module name '{$baseModuleName}'"],
-                ]);
-            }
-
-            Permission::create([
-                'name' => $permissionName,
-                'module_name' => ucfirst($moduleName),
-                'guard_name' => 'web',
-            ]);
+            $this->createPermission($request);
 
             flashMessage('Success', 'Permission created successfully');
-
-            return back();
 
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
@@ -96,6 +74,8 @@ class PermissionController extends Controller implements HasMiddleware
             flashMessage('Error', 'Oops, something went wrong');
             return back();
         }
+
+        return back();
     }
 
     public function update(PermissionRequest $request, Permission $permission)
@@ -103,31 +83,9 @@ class PermissionController extends Controller implements HasMiddleware
         try {
             $request->validated();
 
-            $moduleName = $request->module_name;
-            if (stripos($moduleName, 'module') === false) {
-                $moduleName = "{$moduleName} Module";
-            }
-
-            // Get base module name for validation
-            $baseModuleName = str_replace(' module', '', strtolower($moduleName));
-            $permissionName = strtolower($request->name);
-
-            // Validate that permission name contains the module name
-            if (stripos($permissionName, $baseModuleName) === false) {
-                throw ValidationException::withMessages([
-                    'name' => ["Permission name must contain the module name '{$baseModuleName}'"],
-                ]);
-            }
-
-            $permission->update([
-                'name' => $permissionName,
-                'module_name' => ucfirst($moduleName),
-                'guard_name' => 'web',
-            ]);
+            $this->updatePermission($permission, $request);
 
             flashMessage('Success', 'Permission updated successfully');
-
-            return back();
 
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
@@ -135,6 +93,8 @@ class PermissionController extends Controller implements HasMiddleware
             flashMessage('Error', 'Oops, something went wrong');
             return back();
         }
+
+        return back();
     }
 
     public function destroy(Permission $permission)
@@ -219,4 +179,57 @@ class PermissionController extends Controller implements HasMiddleware
         return $permissions;
     }
 
+    private function createPermission($request)
+    {
+        $moduleName = $this->formatModuleName($request->module_name);
+        $baseModuleName = $this->getBaseModuleName($moduleName);
+        $permissionName = strtolower($request->name);
+
+        $this->validatePermissionName($permissionName, $baseModuleName);
+
+        return Permission::create([
+            'name' => $permissionName,
+            'module_name' => ucfirst($moduleName),
+            'guard_name' => 'web',
+        ]);
+    }
+
+    private function updatePermission($permission, $request)
+    {
+        $moduleName = $this->formatModuleName($request->module_name);
+        $baseModuleName = $this->getBaseModuleName($moduleName);
+        $permissionName = strtolower($request->name);
+
+        $this->validatePermissionName($permissionName, $baseModuleName);
+
+        $permission->update([
+            'name' => $permissionName,
+            'module_name' => ucfirst($moduleName),
+            'guard_name' => 'web',
+        ]);
+
+        return $permission;
+    }
+
+    private function formatModuleName($moduleName)
+    {
+        if (stripos($moduleName, 'module') === false) {
+            return "{$moduleName} Module";
+        }
+        return $moduleName;
+    }
+
+    private function getBaseModuleName($moduleName)
+    {
+        return str_replace(' module', '', strtolower($moduleName));
+    }
+
+    private function validatePermissionName($permissionName, $baseModuleName)
+    {
+        if (stripos($permissionName, $baseModuleName) === false) {
+            throw ValidationException::withMessages([
+                'name' => ["Permission name must contain the module name '{$baseModuleName}'"],
+            ]);
+        }
+    }
 }
