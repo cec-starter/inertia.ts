@@ -272,7 +272,7 @@ INERTIA_SSR_PORT=13714
 
 npm  install  pm2  -g
 
-pm2  start  bootstrap/ssr/ssr.mjs  --name  "inertia-ssr"
+pm2  start  bootstrap/ssr/ssr.js  --name  "inertia-ssr"
 
 ```
 

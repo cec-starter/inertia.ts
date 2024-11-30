@@ -11,10 +11,10 @@ import {
     CommandList,
     CommandSeparator,
     CommandShortcut,
-    Dialog,
-    DialogContent,
+    DialogDescription,
+    DialogTitle,
 } from "./ui";
-import { CreditCard, Link, Settings, User } from "lucide-react";
+import { User } from "lucide-react";
 import { router } from "@inertiajs/react";
 
 export function CommandMenu() {
@@ -47,6 +47,8 @@ export function CommandMenu() {
                 onOpenChange={setIsOpen}
                 className="fixed max-w-sm p-0 py-2 border overflow-hidden top-[30%] left-[50%] translate-x-[-50%] translate-y-[-50%] md:max-w-xl lg:max-w-2xl bg-background"
             >
+                <DialogTitle className="sr-only">Command Menu</DialogTitle>
+                <DialogDescription className="sr-only">Fixed the warning</DialogDescription>
                 <Command className="bg-background">
                     <CommandInput
                         className="flex py-3 w-full h-11 text-lg rounded-md border-0 outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"

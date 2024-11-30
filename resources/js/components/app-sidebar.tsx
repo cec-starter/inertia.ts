@@ -36,17 +36,17 @@ function SidebarDropdownMenu({ item, location }: any) {
             <DropdownMenu>
                 <SidebarMenuButton
                     // tooltip={item.title}
-                    className="flex items-center justify-between"
+                    className="flex justify-between items-center"
                 >
                     <DropdownMenuTrigger className="w-full">
                         {item.icon && <item.icon />}
                     </DropdownMenuTrigger>
                 </SidebarMenuButton>
                 <SidebarMenuSub>
-                    <DropdownMenuContent className="relative w-48 left-10 -top-8">
+                    <DropdownMenuContent className="relative -top-8 left-10 w-48">
                         <DropdownMenuLabel>{item.title}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
+                        <DropdownMenuGroup className="list-none">
                             {item.items.map((subItem: any) => {
                                 const { isActive: isSubItemActive } =
                                     useSidebarStatus(location, subItem);
@@ -60,7 +60,7 @@ function SidebarDropdownMenu({ item, location }: any) {
                                             asChild
                                             className={
                                                 isSubItemActive
-                                                    ? "bg-primary text-accent hover:bg-primary/95 rounded-lg hover:text-accent active:bg-primary dark:text-accent-foreground"
+                                                    ? "rounded-lg bg-primary text-accent hover:bg-primary/95 hover:text-accent active:bg-primary dark:text-accent-foreground"
                                                     : "text-muted-foreground"
                                             }
                                         >
@@ -109,7 +109,7 @@ function SidebarCollapsibleMenu({ item, location }: any) {
                                         asChild
                                         className={
                                             isSubItemActive
-                                                ? "bg-primary text-accent hover:bg-primary/95 rounded-lg hover:text-accent active:bg-primary dark:text-accent-foreground"
+                                                ? "rounded-lg bg-primary text-accent hover:bg-primary/95 hover:text-accent active:bg-primary dark:text-accent-foreground"
                                                 : "text-muted-foreground"
                                         }
                                     >
@@ -157,7 +157,7 @@ function SidebarMenuItems({ items, state, location, isMobile }: any) {
                     asChild
                     className={
                         isActive
-                            ? "bg-primary text-accent hover:bg-primary/95 rounded-lg hover:text-accent active:bg-primary dark:text-accent-foreground"
+                            ? "rounded-lg bg-primary text-accent hover:bg-primary/95 hover:text-accent active:bg-primary dark:text-accent-foreground"
                             : "text-muted-foreground"
                     }
                 >
@@ -185,7 +185,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     return (
         <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader className="h-16 px-2 border-b border-sidebar-border">
+            <SidebarHeader className="px-2 h-16 border-b border-sidebar-border">
                 <Link className="flex items-center" href={route("dashboard")}>
                     <Logo className="size-10" />
                     <div className="text-sm leading-tight text-left group-data-[collapsible=icon]:hidden">
