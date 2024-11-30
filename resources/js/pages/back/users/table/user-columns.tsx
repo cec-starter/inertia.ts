@@ -9,7 +9,7 @@ export const userColumns = (handleClick?: (user: UserType) => void) => [
         sortable: true,
         render: (user: UserType) => (
             <div
-                className="flex gap-2 items-center p-1 w-48 rounded-md cursor-pointer"
+                className="flex gap-2 items-center p-1"
                 onClick={() => handleClick?.(user)}
             >
                 <Avatar>
@@ -29,7 +29,7 @@ export const userColumns = (handleClick?: (user: UserType) => void) => [
         sortable: true,
         render: (user: UserType) => (
             <div
-                className="flex gap-2 items-center p-1 w-48 rounded-md cursor-pointer"
+                className="flex gap-2 items-center p-1"
                 onClick={() => handleClick?.(user)}
             >
                 {user.email}

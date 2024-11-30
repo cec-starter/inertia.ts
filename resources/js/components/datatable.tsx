@@ -255,7 +255,7 @@ export function DataTable<T extends Record<string, any>>({
                         </div>
 
                         {/* Current Page Text */}
-                        <div className="flex gap-3 justify-between items-center">
+                        <div className="flex overflow-hidden overflow-x-auto flex-col gap-3 justify-between items-start md:items-center md:flex-row">
                             <span className="text-sm whitespace-nowrap text-muted-foreground">
                                 Page {data.current_page} of {data.last_page}
                             </span>
@@ -452,47 +452,52 @@ export function DataTable<T extends Record<string, any>>({
                         <TableHeader className={headerClassName}>
                             <TableRow>
                                 {selectable && (
-                                    <TableHead className="w-[40px] px-2">
-                                        <Checkbox
-                                            checked={isAllSelected}
-                                            onCheckedChange={handleSelectAll}
-                                            aria-label="Select all"
-                                        />
+                                    <TableHead>
+                                        <div className="flex items-center w-6 md:w-auto">
+                                            <Checkbox
+                                                checked={isAllSelected}
+                                                onCheckedChange={
+                                                    handleSelectAll
+                                                }
+                                                aria-label="Select all"
+                                            />
+                                        </div>
                                     </TableHead>
                                 )}
                                 {columns.map((column) => (
-                                    <TableHead
-                                        key={column.key.toString()}
-                                        className={cn(
-                                            column.sortable &&
-                                                "cursor-pointer select-none",
-                                            column.className
-                                        )}
-                                    >
-                                        {column.sortable ? (
-                                            <button
-                                                className="flex gap-1 items-center cursor-pointer hover:text-primary"
-                                                onClick={() =>
-                                                    handleSort(
-                                                        column.key.toString()
-                                                    )
-                                                }
-                                            >
-                                                {column.label}
-                                                {column.key === params.sort && (
-                                                    <span>
-                                                        {params.direction ===
-                                                        "asc" ? (
-                                                            <IconArrowUp className="size-4" />
-                                                        ) : (
-                                                            <IconArrowDown className="size-4" />
-                                                        )}
-                                                    </span>
-                                                )}
-                                            </button>
-                                        ) : (
-                                            column.label
-                                        )}
+                                    <TableHead key={column.key.toString()}>
+                                        <div
+                                            className={cn(
+                                                column.className,
+                                                "w-40 md:w-auto"
+                                            )}
+                                        >
+                                            {column.sortable ? (
+                                                <button
+                                                    className="flex gap-1 items-center cursor-pointer hover:text-primary"
+                                                    onClick={() =>
+                                                        handleSort(
+                                                            column.key.toString()
+                                                        )
+                                                    }
+                                                >
+                                                    {column.label}
+                                                    {column.key ===
+                                                        params.sort && (
+                                                        <span>
+                                                            {params.direction ===
+                                                            "asc" ? (
+                                                                <IconArrowUp className="size-4" />
+                                                            ) : (
+                                                                <IconArrowDown className="size-4" />
+                                                            )}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            ) : (
+                                                column.label
+                                            )}
+                                        </div>
                                     </TableHead>
                                 ))}
                                 {children && <TableHead>Actions</TableHead>}
@@ -503,15 +508,17 @@ export function DataTable<T extends Record<string, any>>({
                                 <TableRow key={row.id || index}>
                                     {selectable && (
                                         <TableCell className="px-2">
-                                            <Checkbox
-                                                checked={isRowSelected(row)}
-                                                onCheckedChange={() =>
-                                                    handleSelectRow(row)
-                                                }
-                                                aria-label={`Select row ${
-                                                    index + 1
-                                                }`}
-                                            />
+                                            <div className="flex items-center w-6 md:w-auto">
+                                                <Checkbox
+                                                    checked={isRowSelected(row)}
+                                                    onCheckedChange={() =>
+                                                        handleSelectRow(row)
+                                                    }
+                                                    aria-label={`Select row ${
+                                                        index + 1
+                                                    }`}
+                                                />
+                                            </div>
                                         </TableCell>
                                     )}
                                     {columns.map((column) => (

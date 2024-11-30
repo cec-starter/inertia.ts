@@ -16,7 +16,7 @@ export const groups: MenuGroupType[] = [
     },
     {
         label: "Settings",
-        permission: ["read permission", "read role"],
+        permission: ["read permission", "read role", 'read user'],
         items: [
             {
                 title: "Access Control List",

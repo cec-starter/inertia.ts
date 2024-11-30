@@ -83,17 +83,15 @@ export default function Roles({
                         selectable={selectable}
                         onSelectionChange={handleSelectionChange}
                     >
-                        {(roles: RolesType) =>
-                            hasAnyPermission(["update role", "delete role"]) ? (
-                                <RolesActionCell
-                                    auth={auth}
-                                    roles={roles}
-                                    onEdit={handleEdit}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
+                        {hasAnyPermission(["update role", "delete role"])
+                            ? (row: RolesType) => (
+                                  <RolesActionCell
+                                      auth={auth}
+                                      roles={row}
+                                      onEdit={handleEdit}
+                                  />
+                              )
+                            : undefined}
                     </DataTable>
                 </CardContent>
             </Card>

@@ -78,20 +78,18 @@ export default function Permissions({ auth }: { auth: any }) {
                         selectable={selectable}
                         onSelectionChange={handleSelectionChange}
                     >
-                        {(permission: PermissionType) =>
-                            hasAnyPermission([
-                                "update permission",
-                                "delete permission",
-                            ]) ? (
-                                <PermissionActionCell
-                                    auth={auth}
-                                    permission={permission}
-                                    onEdit={handleEdit}
-                                />
-                            ) : (
-                                ""
-                            )
-                        }
+                        {hasAnyPermission([
+                            "update permission",
+                            "delete permission",
+                        ])
+                            ? (row: PermissionType) => (
+                                  <PermissionActionCell
+                                      auth={auth}
+                                      permission={row}
+                                      onEdit={handleEdit}
+                                  />
+                              )
+                            : undefined}
                     </DataTable>
                 </CardContent>
             </Card>

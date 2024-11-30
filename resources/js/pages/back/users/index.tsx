@@ -25,10 +25,13 @@ export default function Users({
     auth: any;
     filterRoles: string[];
 }) {
-    const [selectedUsersBulk, setSelectedUsersBulk] = React.useState<UserType[]>([]);
+    const [selectedUsersBulk, setSelectedUsersBulk] = React.useState<
+        UserType[]
+    >([]);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
     const [tableKey, setTableKey] = React.useState(0);
-    const [selectedUserDetailDialog, setSelectedUserDetailDialog] = React.useState<UserType | null>(null);
+    const [selectedUserDetailDialog, setSelectedUserDetailDialog] =
+        React.useState<UserType | null>(null);
 
     const { hasPermission, hasAnyPermission } = useUserPermissions({
         permissions: auth.permissions ?? [],
@@ -74,13 +77,11 @@ export default function Users({
                         selectable={selectable}
                         onSelectionChange={handleSelectionChange}
                     >
-                        {(user: UserType) =>
-                            hasAnyPermission(["update user", "delete user"]) ? (
-                                <UserActionCell auth={auth} user={user} />
-                            ) : (
-                                ""
-                            )
-                        }
+                        {hasAnyPermission(["update user", "delete user"])
+                            ? (row: UserType) => (
+                                  <UserActionCell auth={auth} user={row} />
+                              )
+                            : undefined}
                     </DataTable>
                 </CardContent>
             </Card>

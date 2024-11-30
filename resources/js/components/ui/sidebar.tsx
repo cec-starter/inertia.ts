@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Tooltip,
@@ -188,7 +188,7 @@ const Sidebar = React.forwardRef<
             return (
                 <div
                     className={cn(
-                        "flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground",
+                        "flex flex-col h-full w-[--sidebar-width] bg-sidebar text-sidebar-foreground",
                         className
                     )}
                     ref={ref}
@@ -217,6 +217,12 @@ const Sidebar = React.forwardRef<
                         }
                         side={side}
                     >
+                        <SheetTitle className="sr-only">
+                            Navigation Menu
+                        </SheetTitle>
+                        <SheetDescription className="sr-only">
+                            Application navigation menu for mobile devices
+                        </SheetDescription>
                         <div className="flex flex-col w-full h-full">
                             {children}
                         </div>
@@ -284,7 +290,7 @@ const SidebarTrigger = React.forwardRef<
             data-sidebar="trigger"
             variant="ghost"
             size="icon"
-            className={cn("h-7 w-7", className)}
+            className={cn("w-7 h-7", className)}
             onClick={(event) => {
                 onClick?.(event);
                 toggleSidebar();
@@ -354,7 +360,7 @@ const SidebarInput = React.forwardRef<
             ref={ref}
             data-sidebar="input"
             className={cn(
-                "h-8 w-full bg-background shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                "w-full h-8 shadow-none bg-background focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                 className
             )}
             {...props}
@@ -435,7 +441,7 @@ const SidebarGroup = React.forwardRef<
             ref={ref}
             data-sidebar="group"
             className={cn(
-                "relative flex w-full min-w-0 flex-col p-2",
+                "flex relative flex-col p-2 w-full min-w-0",
                 className
             )}
             {...props}
@@ -508,7 +514,7 @@ const SidebarMenu = React.forwardRef<
     <ul
         ref={ref}
         data-sidebar="menu"
-        className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+        className={cn("flex flex-col gap-1 w-full min-w-0", className)}
         {...props}
     />
 ));
@@ -521,7 +527,7 @@ const SidebarMenuItem = React.forwardRef<
     <li
         ref={ref}
         data-sidebar="menu-item"
-        className={cn("group/menu-item relative", className)}
+        className={cn("relative group/menu-item", className)}
         {...props}
     />
 ));
@@ -680,7 +686,7 @@ const SidebarMenuSkeleton = React.forwardRef<
             ref={ref}
             data-sidebar="menu-skeleton"
             className={cn(
-                "rounded-md h-8 flex gap-2 px-2 items-center",
+                "flex gap-2 items-center px-2 h-8 rounded-md",
                 className
             )}
             {...props}
